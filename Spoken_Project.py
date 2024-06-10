@@ -91,8 +91,6 @@ def get_frame_size(sampling_rate=sampling_rate, frame_duration=20): # 20 ms defa
 
 def extract_features(audio, frame_size, sr=sampling_rate, n_mfcc=13):
 
-#     audio = librosa.effects.preemphasis(audio)
-
     mfccs = librosa.feature.mfcc(
         y=audio, sr=sr, n_mfcc=n_mfcc,
         hop_length=int(frame_size // 2),
