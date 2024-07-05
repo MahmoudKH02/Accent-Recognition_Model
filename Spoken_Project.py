@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[188]:
+# In[5]:
 
 
 import librosa
@@ -25,7 +25,7 @@ from sklearn.metrics import ConfusionMatrixDisplay
 
 # # Loading Data
 
-# In[189]:
+# In[6]:
 
 
 # just a sample of what the data is like.
@@ -35,10 +35,10 @@ ipd.Audio('./training_set/Hebron/hebron_test021.wav')
 # ## Loading the Speach and Sampling Rates
 # The speach and its sampling rate will be extracted using the librosa library with the help of the `librosa.load()` function
 
-# In[190]:
+# In[7]:
 
 
-sampling_rate = 8000
+sampling_rate = 44100
 
 def load_directory(directory):
     subdirectories = ["Hebron", "Nablus", "Jerusalem", "RamallahReef"]
@@ -59,7 +59,7 @@ def load_directory(directory):
             # Check if the path is a file
             if os.path.isfile(file_path):
                 # Load the audio file
-                audio, sr = librosa.load(file_path, sr=sampling_rate)
+                audio, sr = librosa.load(file_path, sr=None)
                 
                 # Normalize the audio to have a maximum absolute value of 1.0
                 audio = librosa.util.normalize(audio)
@@ -72,7 +72,7 @@ def load_directory(directory):
     return audio_list, labels, rates
 
 
-# In[191]:
+# In[8]:
 
 
 training_directory = './training_set'
@@ -82,7 +82,7 @@ training_voices, Y_train, train_sr = load_directory(training_directory)
 testing_voices, Y_test, test_sr = load_directory(testing_directory)
 
 
-# In[192]:
+# In[9]:
 
 
 # Ensure all voices have the same Sampling Rate
@@ -98,7 +98,7 @@ def check_rates(train_rates, test_rates):
 check_rates(train_sr, test_sr)
 
 
-# In[193]:
+# In[10]:
 
 
 # Sample Sound to check if reading was correct.
@@ -121,14 +121,14 @@ plt.show()
 # * lastly, the type of windowing to be applied, in which a *hamming window* was chosen in this case.
 # 
 
-# In[194]:
+# In[11]:
 
 
 def get_frame_size(sampling_rate=sampling_rate, frame_duration=20): # 20 ms default frame_duration
     return int(sampling_rate * (frame_duration / 1000))
 
 
-# In[195]:
+# In[12]:
 
 
 def extract_features(audio, frame_size, sr=sampling_rate, n_mfcc=13):
@@ -160,14 +160,14 @@ def process_voices(audio_voices, frame_size, sr=sampling_rate, n_mfcc=13):
     return np.array(features)
 
 
-# In[196]:
+# In[13]:
 
 
 X_train_unscaled = process_voices(training_voices, get_frame_size())
 X_test_unscaled = process_voices(testing_voices, get_frame_size())
 
 
-# In[197]:
+# In[14]:
 
 
 print(f'Train: {X_train_unscaled.shape}, Test: {X_test_unscaled.shape}')
@@ -184,7 +184,7 @@ print('Label:', Y_train[5])
 # 
 # **Mean-variance normalization** was applied using the `StandardScaler()` function. This will normalize data points so that all points have a mean of *zero*, and a variance of *one*.
 
-# In[198]:
+# In[15]:
 
 
 scaler = StandardScaler()
@@ -193,7 +193,7 @@ X_train = scaler.fit_transform(X_train_unscaled)
 X_test = scaler.fit_transform(X_test_unscaled)
 
 
-# In[199]:
+# In[16]:
 
 
 X_train[5]
@@ -204,7 +204,7 @@ X_train[5]
 
 # ### Train Simple Models (Before Hyper-parameter tuning)
 
-# In[200]:
+# In[17]:
 
 
 svm_model = SVC(kernel='linear')
@@ -236,7 +236,7 @@ print(classification_report(Y_test, y_pred_knn))
 
 # ### Hyper-parameter Tuning
 
-# In[155]:
+# In[18]:
 
 
 def tune_model(model, params: dict, cv=5, verbose=2):
@@ -280,7 +280,7 @@ print(f"Best Score", best_knn_model.best_score_)
 
 # ### SVM Confusion Matrix (best model)
 
-# In[156]:
+# In[19]:
 
 
 disp = ConfusionMatrixDisplay.from_estimator(
@@ -295,7 +295,7 @@ plt.show()
 
 # ### KNN Confusion Matrix (worst model)
 
-# In[157]:
+# In[20]:
 
 
 disp = ConfusionMatrixDisplay.from_estimator(
