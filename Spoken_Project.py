@@ -167,17 +167,6 @@ X_train_unscaled = process_voices(training_voices, get_frame_size())
 X_test_unscaled = process_voices(testing_voices, get_frame_size())
 
 
-# In[215]:
-
-
-plt.figure(figsize=(25, 10))
-librosa.display.specshow(X_train_unscaled[5, :13],
-                         x_axis="time", 
-                         sr=sampling_rate)
-# plt.colorbar(format="%+2.f")
-plt.show()
-
-
 # In[197]:
 
 
